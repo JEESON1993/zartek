@@ -4,6 +4,7 @@ class CartProvider extends ChangeNotifier {
   List cart = [];
   Map store = {};
   var product;
+  var qty;
   // FlutterSecureStorage storage = new FlutterSecureStorage();
 
   //Add Product to cart
@@ -19,6 +20,9 @@ class CartProvider extends ChangeNotifier {
     product = cart.firstWhere(
         (product) => product["dishname"] == item["dishname"],
         orElse: () => null);
+    qty = cart.firstWhere((product) => product["qty"] == item["qty"],
+        orElse: () => null);
+
     if (product == null)
       cart.add(item);
     else
@@ -43,7 +47,7 @@ class CartProvider extends ChangeNotifier {
     if (cart.length == 1) {
       store = {};
     }
-    cart.removeWhere((product) => product["id"] == item.id);
+    cart.removeWhere((product) => product["dishname"] == item["dishname"]);
     notifyListeners();
   }
 
@@ -52,7 +56,7 @@ class CartProvider extends ChangeNotifier {
     if (cart.length == 1) {
       store = {};
     }
-    cart.removeWhere((product) => product["id"] == item["id"]);
+    cart.removeWhere((product) => product["dishname"] == item["dishname"]);
     notifyListeners();
   }
 

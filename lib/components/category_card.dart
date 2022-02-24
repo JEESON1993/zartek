@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_touch_spin/flutter_touch_spin.dart';
+import 'package:provider/provider.dart';
+import 'package:zartech_machine_test/provider/cart_provider.dart';
 
 class CategoryCard extends StatelessWidget {
-  var isveg, dishname, dishprice, calory, description, dishimage, isaddon;
+  var isveg,
+      dishname,
+      dishprice,
+      calory,
+      description,
+      dishimage,
+      isaddon,
+      spinnervalue;
   Function(num)? onChanged1;
   CategoryCard(
       {Key? key,
@@ -14,7 +23,8 @@ class CategoryCard extends StatelessWidget {
       this.description,
       this.dishimage,
       this.isaddon,
-      this.onChanged1})
+      this.onChanged1,
+      this.spinnervalue})
       : super(key: key);
 
   @override

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zartech_machine_test/authentication.dart';
+import 'package:zartech_machine_test/components/cart_card2.dart';
 import 'package:zartech_machine_test/components/category_card.dart';
 import 'package:zartech_machine_test/constants/appconstants.dart';
 import 'package:zartech_machine_test/provider/cart_provider.dart';
@@ -31,6 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int indexvalue = 0;
 
   List categoryList = [];
+
+  num valuespinner = 0;
+  var qty;
   @override
   void initState() {
     // TODO: implement initState
@@ -69,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final getmodel = Provider.of<CartProvider>(context, listen: false);
+
     var item;
     void addtocart(
         {dishname,
@@ -91,6 +96,30 @@ class _HomeScreenState extends State<HomeScreen> {
       };
 
       getmodel.addItem(item: item);
+      print(getmodel.cart);
+    }
+
+    void deleteItem(
+        {dishname,
+        dishprice,
+        description,
+        calory,
+        isveg,
+        dishimage,
+        isaddon,
+        qty}) {
+      item = {
+        'dishname': dishname,
+        'dishprice': dishprice,
+        'description': description,
+        'calory': calory,
+        'isveg': isveg,
+        'dishimage': dishimage,
+        'isaddon': isaddon,
+        'qty': qty
+      };
+
+      getmodel.deleteItemCart(item);
       print(getmodel.cart);
     }
 
@@ -267,33 +296,93 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: categoryList.map((menulist1) {
-                            return CategoryCard(
-                              dishname: menulist1['dish_name'],
-                              dishprice: menulist1['dish_price'],
-                              description: menulist1['dish_description'],
-                              calory: menulist1['dish_calories'],
-                              isveg: menulist1['dish_Type'],
-                              dishimage: menulist1['dish_image'],
-                              isaddon: menulist1['addonCat'],
-                              onChanged1: (val) {
-                                // print(menulist1);
-                                if (val == 0) {
-                                  getmodel.deleteItemCart(menulist1);
-                                } else {
-                                  addtocart(
-                                      dishname: menulist1['dish_name'],
-                                      dishprice: menulist1['dish_price'],
-                                      description:
-                                          menulist1['dish_description'],
-                                      calory: menulist1['dish_calories'],
-                                      dishimage: menulist1['dish_image'],
-                                      isveg: menulist1['dish_Type'],
-                                      //isaddon: menulist1['addonCat'],
-                                      qty: val);
-                                }
-                                //print(getmodel.cart);
-                              },
-                            );
+                            return Consumer<CartProvider>(
+                                builder: (context, data, child) {
+                              qty = data.cart.firstWhere(
+                                  (element) =>
+                                      element["dishname"] ==
+                                      menulist1['dish_name'], orElse: () {
+                                return null;
+                              });
+                              return CartCard(
+                                dishname: menulist1['dish_name'],
+                                dishprice: menulist1['dish_price'],
+                                description: menulist1['dish_description'],
+                                calory: menulist1['dish_calories'],
+                                isveg: menulist1['dish_Type'],
+                                dishimage: menulist1['dish_image'],
+                                isaddon: menulist1['addonCat'],
+                                spinnervalue: qty == null ? 0 : qty["qty"],
+                                onChanged1: (val) {
+                                  // print(menulist1);
+
+                                  if (val == 0) {
+                                    deleteItem(
+                                        dishname: menulist1['dish_name'],
+                                        dishprice: menulist1['dish_price'],
+                                        description:
+                                            menulist1['dish_description'],
+                                        calory: menulist1['dish_calories'],
+                                        dishimage: menulist1['dish_image'],
+                                        isveg: menulist1['dish_Type'],
+                                        //isaddon: menulist1['addonCat'],
+                                        qty: val);
+                                  } else {
+                                    addtocart(
+                                        dishname: menulist1['dish_name'],
+                                        dishprice: menulist1['dish_price'],
+                                        description:
+                                            menulist1['dish_description'],
+                                        calory: menulist1['dish_calories'],
+                                        dishimage: menulist1['dish_image'],
+                                        isveg: menulist1['dish_Type'],
+                                        //isaddon: menulist1['addonCat'],
+                                        qty: val);
+                                  }
+                                  //print(getmodel.cart);
+                                },
+                              );
+                            });
+                            // CategoryCard(
+                            //   dishname: menulist1['dish_name'],
+                            //   dishprice: menulist1['dish_price'],
+                            //   description: menulist1['dish_description'],
+                            //   calory: menulist1['dish_calories'],
+                            //   isveg: menulist1['dish_Type'],
+                            //   dishimage: menulist1['dish_image'],
+                            //   isaddon: menulist1['addonCat'],
+                            //   spinnervalue: getmodel.qty == null
+                            //       ? 0
+                            //       : getmodel.qty['qty'],
+                            //   onChanged1: (val) {
+                            //     // print(menulist1);
+                            //     qty = val;
+                            //     if (val == 0) {
+                            //       deleteItem(
+                            //           dishname: menulist1['dish_name'],
+                            //           dishprice: menulist1['dish_price'],
+                            //           description:
+                            //               menulist1['dish_description'],
+                            //           calory: menulist1['dish_calories'],
+                            //           dishimage: menulist1['dish_image'],
+                            //           isveg: menulist1['dish_Type'],
+                            //           //isaddon: menulist1['addonCat'],
+                            //           qty: val);
+                            //     } else {
+                            //       addtocart(
+                            //           dishname: menulist1['dish_name'],
+                            //           dishprice: menulist1['dish_price'],
+                            //           description:
+                            //               menulist1['dish_description'],
+                            //           calory: menulist1['dish_calories'],
+                            //           dishimage: menulist1['dish_image'],
+                            //           isveg: menulist1['dish_Type'],
+                            //           //isaddon: menulist1['addonCat'],
+                            //           qty: val);
+                            //     }
+                            //     //print(getmodel.cart);
+                            //   },
+                            // );
                           }).toList()),
                     );
                   }).toList(),

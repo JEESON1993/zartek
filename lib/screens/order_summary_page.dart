@@ -21,6 +21,8 @@ var itemtotal;
 class _CartSummaryPageState extends State<CartSummaryPage> {
   bool isLoading = false;
 
+  var qtysummary;
+
   showMessage(String errorMessage) {
     showDialog(
         context: context,
@@ -49,6 +51,56 @@ class _CartSummaryPageState extends State<CartSummaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final getmodel = Provider.of<CartProvider>(context, listen: false);
+    var item;
+    void addtocart(
+        {dishname,
+        dishprice,
+        description,
+        calory,
+        isveg,
+        dishimage,
+        isaddon,
+        qty}) {
+      item = {
+        'dishname': dishname,
+        'dishprice': dishprice,
+        'description': description,
+        'calory': calory,
+        'isveg': isveg,
+        'dishimage': dishimage,
+        'isaddon': isaddon,
+        'qty': qty
+      };
+
+      getmodel.addItem(item: item);
+      print(getmodel.cart);
+    }
+
+    void deleteItem(
+        {dishname,
+        dishprice,
+        description,
+        calory,
+        isveg,
+        dishimage,
+        isaddon,
+        qty}) {
+      item = {
+        'dishname': dishname,
+        'dishprice': dishprice,
+        'description': description,
+        'calory': calory,
+        'isveg': isveg,
+        'dishimage': dishimage,
+        'isaddon': isaddon,
+        'qty': qty
+      };
+
+      getmodel.deleteItemCart(item);
+      print(getmodel.cart);
+    }
+
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -119,7 +171,31 @@ class _CartSummaryPageState extends State<CartSummaryPage> {
                                   data.cart[index]['qty'],
                               calories: data.cart[index]['calory'],
                               isveg: data.cart[index]['isveg'],
-                              onChangedorder: null,
+                              onChangedorder: (val) {
+                                if (val == 0) {
+                                  deleteItem(
+                                      dishname: data.cart[index]['dishname'],
+                                      dishprice: data.cart[index]['dishprice'],
+                                      description: data.cart[index]
+                                          ['dishprice'],
+                                      calory: data.cart[index]['calory'],
+                                      dishimage: data.cart[index]['dishimage'],
+                                      isveg: data.cart[index]['isveg'],
+                                      //isaddon: menulist1['addonCat'],
+                                      qty: val);
+                                } else {
+                                  addtocart(
+                                      dishname: data.cart[index]['dishname'],
+                                      dishprice: data.cart[index]['dishprice'],
+                                      description: data.cart[index]
+                                          ['dishprice'],
+                                      calory: data.cart[index]['calory'],
+                                      dishimage: data.cart[index]['dishimage'],
+                                      isveg: data.cart[index]['isveg'],
+                                      //isaddon: menulist1['addonCat'],
+                                      qty: val);
+                                }
+                              },
                             );
                           }),
                       Padding(
@@ -133,7 +209,7 @@ class _CartSummaryPageState extends State<CartSummaryPage> {
                                   TextStyle(color: Colors.black, fontSize: 22),
                             ),
                             Text(
-                              grandtotal.floorToDouble().toString() + '/-',
+                              grandtotal.ceilToDouble().toString() + '/-',
                               style:
                                   TextStyle(color: Colors.black, fontSize: 22),
                             )

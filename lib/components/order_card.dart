@@ -77,7 +77,7 @@ class OrderSummaryCard extends StatelessWidget {
                     min: 0,
                     max: 50,
                     step: 1,
-                    value: ordercount == null ? 0 : ordercount,
+                    value: ordercount,
                     textStyle:
                         const TextStyle(fontSize: 16, color: Colors.white),
                     iconSize: 15.0,

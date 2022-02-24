@@ -114,6 +114,7 @@ class _PhoneAuthFormState extends State<PhoneAuthForm> {
 
   Future<void> phoneSignIn({required String phoneNumber}) async {
     await _auth.verifyPhoneNumber(
+        timeout: Duration(seconds: 120),
         phoneNumber: phoneNumber,
         verificationCompleted: _onVerificationCompleted,
         verificationFailed: _onVerificationFailed,
